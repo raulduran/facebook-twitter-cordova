@@ -1,0 +1,1 @@
+Facebook app for Cordova/Phonegap using plugin appInBrowser
