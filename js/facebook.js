@@ -81,12 +81,21 @@ var facebook = {
 		});
 	},
 
-	onFacebookPostFeed: function(text) {
+	/*
+	Param post object:
+	{message: 'Lorem lipsum',
+	link: 'http://ntrenat.elnucleo.org',
+	picture: 'http://ntrenat.elnucleo.org/logo.png',
+	name: 'Esto es un nombre',
+	caption: 'ntrenat.elnucleo.org',
+	description: 'lorem lipsum'}
+	*/
+	onFacebookPostFeed: function(post) {
 		if(window.localStorage.getItem('facebook_accessToken') === null) {
 			return false;
 		}
-		var url = "https://graph.facebook.com/me/feed";
-		$.post(url, {access_token: window.localStorage.getItem('facebook_accessToken'), message: text})
+		var url = "https://graph.facebook.com/me/feed?access_token="+window.localStorage.getItem('facebook_accessToken');
+		$.post(url, post)
 			.done(function(data) {
 				//Comment this line
 				document.getElementById('status').innerHTML = data.id;
