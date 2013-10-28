@@ -8,7 +8,7 @@ var permissions = 'email,publish_actions';
 var facebook = {
 
 	//Function facebook login
-	onFacebookLogin: function() {
+	onFacebookLogin: function(option) {
 
 		var authorize_url  = "https://m.facebook.com/dialog/oauth?";
 			authorize_url += "client_id=" + appId;
@@ -21,8 +21,9 @@ var facebook = {
 			authorize_url += "&scope=" + permissions;
 		}
 
-		var userDenied = false;
-		var appInBrowser = window.open(authorize_url, '_blank', 'location=no');
+		option = (option)?option:'location=no';
+
+		var appInBrowser = window.open(authorize_url, '_blank', option);
 
 		appInBrowser.addEventListener('loadstart', function(location) {
 
@@ -35,18 +36,13 @@ var facebook = {
 
 			if (location.url.indexOf("error_reason=user_denied") !== -1) {
 				// User denied
-				userDenied = true;
 				window.localStorage.setItem('facebook_accessToken', null);
 				appInBrowser.close();
 			}
 		});
-
-		appInBrowser.addEventListener('exit', function(event) {
-			//Comment this line
-			document.getElementById('status').innerHTML = window.localStorage.getItem('facebook_accessToken');
-		});
 	},
 
+	//Function logout
 	onFacebookLogout: function() {
 		var logout_url = encodeURI("https://www.facebook.com/logout.php?next=" + redirectUrl + "&access_token=" + window.localStorage.getItem('facebook_accessToken'));
 		var appInBrowser = window.open(logout_url, '_blank', 'hidden=yes,location=no');
@@ -60,13 +56,21 @@ var facebook = {
 				appInBrowser.close();
 			}
 		});
+	},
 
-		appInBrowser.addEventListener('exit', function(event) {
-			//Comment this line
-			document.getElementById('status').innerHTML = window.localStorage.getItem('facebook_accessToken');
+	//Function check With Login
+	onFacebookCheckWithLogin: function() {
+		var access_token = window.localStorage.getItem('facebook_accessToken');
+		var url = "https://graph.facebook.com/me?access_token=" + access_token;
+		$.getJSON(url, function() {
+			facebook.onFacebookLogin('hidden=yes,location=no');
+		})
+		.error(function() {
+			facebook.onFacebookLogin();
 		});
 	},
 
+	//Function get info
 	onFacebookGetInfo: function() {
 		if(window.localStorage.getItem('facebook_accessToken') === null) {
 			return false;
@@ -75,13 +79,14 @@ var facebook = {
 		$.getJSON(url, function(data) {
 			window.localStorage.setItem('facebook_uid', data.id);
 		})
-		.done(function() {
-			//Comment this line
-			document.getElementById('status').innerHTML = window.localStorage.getItem('facebook_uid');
+		.error(function() {
+			window.localStorage.setItem('facebook_accessToken', null);
+			window.localStorage.setItem('facebook_uid', null);
 		});
 	},
 
 	/*
+	Function post feed
 	Param post object:
 	{message: 'Lorem lipsum',
 	link: 'http://ntrenat.elnucleo.org',
@@ -96,10 +101,9 @@ var facebook = {
 		}
 		var url = "https://graph.facebook.com/me/feed?access_token="+window.localStorage.getItem('facebook_accessToken');
 		$.post(url, post)
-			.done(function(data) {
-				//Comment this line
-				document.getElementById('status').innerHTML = data.id;
+			.error(function() {
+				window.localStorage.setItem('facebook_accessToken', null);
+				window.localStorage.setItem('facebook_uid', null);
 		});
 	}
 };
-

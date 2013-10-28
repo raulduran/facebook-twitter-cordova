@@ -9,6 +9,11 @@ var app = {
 	},
 
 	onDeviceReady: function() {
-		facebook.onFacebookLogin();
+		facebook.onFacebookCheckWithLogin();
+	},
+
+	getInfo: function() {
+		facebook.onFacebookGetInfo();
+		alert(window.localStorage.getItem('facebook_uid'));
 	}
 };
