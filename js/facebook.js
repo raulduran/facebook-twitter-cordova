@@ -101,9 +101,9 @@ var facebook = {
 		}
 		var url = "https://graph.facebook.com/me/feed?access_token="+window.localStorage.getItem('facebook_accessToken');
 		$.post(url, post)
-			.error(function() {
-				window.localStorage.setItem('facebook_accessToken', null);
-				window.localStorage.setItem('facebook_uid', null);
+		.error(function() {
+			window.localStorage.setItem('facebook_accessToken', null);
+			window.localStorage.setItem('facebook_uid', null);
 		});
 	}
 };

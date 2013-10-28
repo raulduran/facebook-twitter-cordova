@@ -9,7 +9,8 @@ var app = {
 	},
 
 	onDeviceReady: function() {
-		facebook.onFacebookCheckWithLogin();
+		//facebook.onFacebookCheckWithLogin();
+		twitter.login();
 	},
 
 	getInfo: function() {

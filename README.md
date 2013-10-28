@@ -1,1 +1,1 @@
-Facebook app for Cordova/Phonegap using plugin appInBrowser
+Facebook and Twitter login and post for Cordova/Phonegap using plugin appInBrowser
